@@ -50,5 +50,6 @@ for i in range(k-first_layyer_number):
 
 table = list(zip(Accurary,neurons_combination))
 vals = np.array(table)
-plt.table(vals)
-print(table)
+print(vals)
+#plt.table(vals)
+#print(table)

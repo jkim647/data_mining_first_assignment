@@ -1,0 +1,54 @@
+import pandas
+import numpy as np
+from matplotlib import pyplot as plt
+from sklearn.model_selection import train_test_split,cross_val_score
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+from sklearn.linear_model import LogisticRegression
+from sklearn.feature_selection import RFE
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.decomposition import PCA
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.feature_selection import SelectFromModel
+
+# partB 2.1
+url ="https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv"
+names = ['times pregnant', 'glucose', 'blood pressure', 'thickness', 'serum', 'Body_ass_index','pedigree_function', 'age', 'class']
+
+rawdata = pandas.read_csv(url, names=names)
+array = rawdata.values
+nrow, ncol = rawdata.shape
+X = array[:, 0:8]
+Y = array[:, 8]
+
+pred_train, pred_test, tar_train, tar_test =train_test_split(X, Y, test_size=.3, random_state=4)
+
+def get_accuracy(target_train, target_test, predicted_test, predicted_train):
+    clf = MLPClassifier(hidden_layer_sizes=(20),max_iter = 150)
+    clf.fit(predicted_train, np.ravel(target_train,order='C'))
+    predictions = clf.predict(predicted_test)
+    return accuracy_score(target_test, predictions)
+
+
+#shuffle the dataset using a random seed of 4 and split into train/test segments
+print("Accuracy score of our model without feature selection: %.2f" % get_accuracy(tar_train, tar_test, pred_test,pred_train))
+
+print("-----------")
+#partB 2.3
+k=20
+first_layyer_number = 1
+Accurary = []
+neurons_combination = []
+for i in range(k-first_layyer_number):
+    clf = MLPClassifier(hidden_layer_sizes=(first_layyer_number, k-first_layyer_number), max_iter=150)
+    clf.fit(pred_train, np.ravel(tar_train, order='C'))
+    predictions_Accurary = clf.predict(pred_test)
+    Accurary.append(accuracy_score(tar_test,predictions_Accurary))
+    first_layyer_number= first_layyer_number+1
+    neurons_combination.append(clf.hidden_layer_sizes)
+
+table = list(zip(Accurary,neurons_combination))
+vals = np.array(table)
+plt.table(vals)
+print(table)

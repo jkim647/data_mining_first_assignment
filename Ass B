@@ -47,9 +47,11 @@ for i in range(k-first_layyer_number):
     Accurary.append(accuracy_score(tar_test,predictions_Accurary))
     first_layyer_number= first_layyer_number+1
     neurons_combination.append(clf.hidden_layer_sizes)
-
-table = list(zip(Accurary,neurons_combination))
-vals = np.array(table)
-print(vals)
-#plt.table(vals)
-#print(table)
+    
+table_v = pandas.DataFrame(
+    {
+        'neurons_combination':neurons_combination,
+        'Accurary':Accurary
+    }
+)
+print (table_v)

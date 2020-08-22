@@ -26,7 +26,7 @@ pred_train, pred_test, tar_train, tar_test = train_test_split(predictors,target,
 split_threshold = 3
 for i in range(2, split_threshold):
     # 1)-----------------------------------------------------------------------------------------------
-    classifier = DecisionTreeClassifier(criterion="entropy", random_state=999, min_samples_split=2)  # configure the classifier
+    classifier = DecisionTreeClassifier(criterion="entropy", random_state=999, min_samples_split=50)  # configure the classifier
     classifier = classifier.fit(pred_train, tar_train)  # train a decision tree model
     predictions = classifier.predict(pred_test)  # deploy model and make predictions on test set
     print(predictions)
@@ -46,7 +46,15 @@ for i in range(2, split_threshold):
 
 #MLP Classification
 
-clif = MLPClassifier
+clf = MLPClassifier(activation = 'logistic', solver="sgd", learning_rate_init = 0.1, alpha= 0.000005, hidden_layer_sizes=(5,2),
+                    random_state=1, max_iter=500)
+clf.fit(pred_train,np.ravel(tar_train, order="C"))
+predictions_mlp = clf.predict(pred_test)
+print("Accuracy score of our model with MLP:", accuracy_score(tar_test,predictions_mlp))
+prob_mlp = clf.predict_proba(pred_test)
+print(prob_mlp)
+#scores = cross_val_score(clf, predictions_mlp, target, cv=10)
+#print("Accuracy score of our model with MLP under cross validation", scores.mean())
 
 
 

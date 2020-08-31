@@ -38,11 +38,11 @@ for i in range(2, split_threshold):
     predictions = classifier.predict(pred_test)  # deploy model and make predictions on test set
     print(predictions)
     print("Accuracy score of our model with Decision Tree:", i, accuracy_score(tar_test, predictions))  #overall accuracy_score
-    confusion = confusion_matrix(tar_test, predictions)
-    print(confusion)  #display confusion matrix
+    confusion_Dt = confusion_matrix(tar_test, predictions)
+    print(confusion_Dt)  #display confusion matrix
     # 2a)-----------------------------------------------------------------------------------------------
-    classification_report =classification_report(tar_test, predictions)
-    print(classification_report)
+    #classification_report =classification_report(tar_test, predictions)
+    #print(classification_report)
     precision = precision_score(y_true=tar_test, y_pred=predictions, average='micro')
     print("Precision score of our model with Decision Tree:", precision)
     recall = recall_score(y_true=tar_test, y_pred=predictions, average='micro')
@@ -54,13 +54,15 @@ for i in range(2, split_threshold):
 
 #MLP Classification
 
-clf = MLPClassifier(activation = 'logistic', solver="sgd", learning_rate_init = 0.1, alpha= 0.000005, hidden_layer_sizes=(28,3),
-                    random_state=1, max_iter=500)
+clf = MLPClassifier(activation='logistic', solver="sgd", learning_rate_init =0.1, alpha= 0.00000001, hidden_layer_sizes=(15,5),
+                    random_state=1, max_iter=800)
 clf.fit(pred_train,np.ravel(tar_train, order="C"))
 predictions_mlp = clf.predict(pred_test)
 print("Accuracy score of our model with MLP:", accuracy_score(tar_test,predictions_mlp))
 prob_mlp = clf.predict_proba(pred_test)
-print(prob_mlp)
+confusion_mlp = confusion_matrix(tar_test,predictions_mlp)
+classification_report_mlp = classification_report(tar_test,predictions_mlp)
+print(classification_report_mlp)
 #scores = cross_val_score(clf, predictions_mlp, target, cv=10)
 #print("Accuracy score of our model with MLP under cross validation", scores.mean())
 
@@ -95,13 +97,13 @@ for i in range(0,len(prob_mlp)):
     mlp_list = prob_mlp[i]
     tree_list = prob_tree[i]
     test = np.add(mlp_list,tree_list)/2
-    print("==================")
-    highest_index = max(test)
     print(test)
-    print(highest_index)
-    #check_list = isinstance(test, dict)  0.3137
+
+    highest_index = max(test)
+
     highest_index = list(test).index(highest_index)
     check_index(highest_index)
+
 
 
 print(save_class)
